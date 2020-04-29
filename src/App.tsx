@@ -1,16 +1,11 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import "./App.css";
-import PokemonListContainer from "./pokemonData/PokemonListContainer";
-import {
-  setPokemonDataAction,
-  selectPokemonResults,
-} from "./pokemonData/pokemonData.redux";
+import { PokemonListContainer } from "./pokemonData/PokemonListContainer";
+import { setPokemonDataAction } from "./pokemonData/pokemonData.redux";
 
 function App() {
   const dispatch = useDispatch();
-  const pokemonResults = useSelector(selectPokemonResults);
-
   const pokemonUrl = "https://pokeapi.co/api/v2/pokedex/national/";
 
   useEffect(() => {
@@ -20,7 +15,7 @@ function App() {
         const pokemon = data.pokemon_entries;
         dispatch(setPokemonDataAction(pokemon));
       });
-  }, [pokemonResults]);
+  });
 
   return (
     <div className="App">

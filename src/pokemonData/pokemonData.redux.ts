@@ -1,16 +1,18 @@
-import { createSelector } from "reselect";
-
 export interface Pokemon {
   entry_number: number;
   pokemon_species: {
     name: string;
     url: string;
   };
+  imageUrl: string;
 }
 
 // Selectors
 
-export const selectPokemonResults = (state) => state.results.pokemon;
+export const selectPokemonResults = (state) => state.pokemon.results;
+export const selectShowModal = (state) => state.pokemon.showDetails;
+export const selectDetailsNumber = (state) => state.pokemon.detailsNumber;
+export const selectPokemonDetails = (state) => state.pokemon.pokemonDetails;
 export const selectState = (state) => state;
 
 // Actions
@@ -20,40 +22,92 @@ interface SetPokemonDataAction {
   payload: Pokemon[];
 }
 
-type PokemonActionTypes = SetPokemonDataAction;
+interface SetShowDetailsAction {
+  type: string;
+  payload: {
+    showDetails: boolean;
+    detailsNumber?: number;
+  };
+}
 
-export const setPokemonDataAction = (data: Pokemon[]): PokemonActionTypes => ({
+interface SetPokemonDetailsAction {
+  type: string;
+  payload: Object;
+}
+
+type PokemonActionTypes =
+  | SetPokemonDataAction
+  | SetShowDetailsAction
+  | SetPokemonDetailsAction;
+
+export const setPokemonDataAction = (
+  payload: Pokemon[]
+): PokemonActionTypes => ({
   type: "pokemonData/setData",
-  payload: data,
+  payload,
+});
+
+export const setPokemonDetailsAction = (
+  payload: Object
+): PokemonActionTypes => ({
+  type: "pokemonData/setDetails",
+  payload,
+});
+
+export const setShowDetailsAction = (payload: {
+  showDetails: boolean;
+  detailsNumber?: number;
+}): PokemonActionTypes => ({
+  type: "pokemonData/setShowDetails",
+  payload,
 });
 
 // Reducers
 
 interface PokemonState {
-  pokemon: {
-    results: Pokemon[] | null;
-  };
+  results: Pokemon[] | null;
+  showDetails: boolean;
+  detailsNumber: number | null;
+  pokemonDetails: Object | null;
 }
 
 const initialState: PokemonState = {
-  pokemon: {
-    results: null,
-  },
+  results: null,
+  showDetails: false,
+  detailsNumber: null,
+  pokemonDetails: null,
 };
 
-export function pokemonReducer(
-  state = initialState,
-  action: PokemonActionTypes
-): PokemonState {
+export function pokemonReducer(state = initialState, action): PokemonState {
   switch (action.type) {
     case "pokemonData/setData": {
       return {
         ...state,
-        pokemon: {
-          results: action.payload,
-        },
+        results: action.payload.map((result) => {
+          return {
+            ...result,
+            imageUrl: "sprites/" + result.entry_number + ".png",
+          };
+        }),
       };
     }
+
+    case "pokemonData/setDetails": {
+      return {
+        ...state,
+        pokemonDetails: action.payload,
+      };
+    }
+
+    case "pokemonData/setShowDetails": {
+      const showDetails = action.payload.showDetails;
+      return {
+        ...state,
+        showDetails: showDetails,
+        detailsNumber: showDetails ? action.payload.detailsNumber : null,
+      };
+    }
+
     default:
       return state;
   }

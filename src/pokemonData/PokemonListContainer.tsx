@@ -1,37 +1,38 @@
-import React, { useEffect, FC } from "react";
-import { connect, useDispatch, useSelector } from "react-redux";
+import React, { FC } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { PokemonListItem } from "./PokemonListItem";
 import {
-  setPokemonDataAction,
   selectPokemonResults,
-  selectState,
   Pokemon,
+  setShowDetailsAction,
 } from "./pokemonData.redux";
+import { PokemonDetailsContainer } from "./PokemonDetailsContainer";
 
-const fakeData = ["1", "2", "3"];
-
-interface Props {
-  pokemonData: Pokemon[] | null;
-}
-
-const PokemonListContainer: FC<Props> = ({ pokemonData }) => {
+export const PokemonListContainer: FC<{}> = () => {
   const dispatch = useDispatch();
-  console.log({ pokemonData });
-
-  const fakeData = ["1", "2", "3"];
-
-  console.log(selectState);
+  const pokemonData = useSelector(selectPokemonResults);
 
   return (
     <Container>
-      {pokemonData === undefined
-        ? null
-        : pokemonData.map((item) => (
-            <PokemonListItem value={item} key={item} />
+      {pokemonData &&
+        pokemonData
+          .filter((pokemon) => pokemon.entry_number <= 10)
+          .map((pokemon: Pokemon) => (
+            <PokemonListItem
+              pokemon={pokemon}
+              key={pokemon.entry_number}
+              onClick={() =>
+                dispatch(
+                  setShowDetailsAction({
+                    showDetails: true,
+                    detailsNumber: pokemon.entry_number,
+                  })
+                )
+              }
+            />
           ))}
-      <button onClick={() => dispatch({ type: "click" })}>Click</button>
-      <div>{pokemonData}</div>
+      <PokemonDetailsContainer />
     </Container>
   );
 };
@@ -39,11 +40,3 @@ const PokemonListContainer: FC<Props> = ({ pokemonData }) => {
 const Container = styled.div`
   border: 2px solid black;
 `;
-
-const mapStateToProps = (state) => {
-  return {
-    pokemonData: selectPokemonResults(state),
-  };
-};
-
-export default connect(mapStateToProps)(PokemonListContainer);
