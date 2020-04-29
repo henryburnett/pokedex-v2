@@ -4,34 +4,39 @@ import styled from "styled-components";
 import { PokemonListItem } from "./PokemonListItem";
 import {
   selectPokemonResults,
+  selectFilteredResults,
   Pokemon,
   setShowDetailsAction,
+  selectSearchTerm,
 } from "./pokemonData.redux";
 import { PokemonDetailsContainer } from "./PokemonDetailsContainer";
 
 export const PokemonListContainer: FC<{}> = () => {
   const dispatch = useDispatch();
-  const pokemonData = useSelector(selectPokemonResults);
+  const searchTerm = useSelector(selectSearchTerm);
+  const allPokemon = useSelector(selectPokemonResults);
+  const filteredPokemon = useSelector(selectFilteredResults);
+
+  const pokemonList =
+    searchTerm === "" || searchTerm === null ? allPokemon : filteredPokemon;
 
   return (
     <Container>
-      {pokemonData &&
-        pokemonData
-          .filter((pokemon) => pokemon.entry_number <= 10)
-          .map((pokemon: Pokemon) => (
-            <PokemonListItem
-              pokemon={pokemon}
-              key={pokemon.entry_number}
-              onClick={() =>
-                dispatch(
-                  setShowDetailsAction({
-                    showDetails: true,
-                    detailsNumber: pokemon.entry_number,
-                  })
-                )
-              }
-            />
-          ))}
+      {pokemonList &&
+        pokemonList.map((pokemon: Pokemon) => (
+          <PokemonListItem
+            pokemon={pokemon}
+            key={pokemon.entry_number}
+            onClick={() =>
+              dispatch(
+                setShowDetailsAction({
+                  showDetails: true,
+                  detailsNumber: pokemon.entry_number,
+                })
+              )
+            }
+          />
+        ))}
       <PokemonDetailsContainer />
     </Container>
   );

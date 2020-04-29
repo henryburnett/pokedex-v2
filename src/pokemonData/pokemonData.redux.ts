@@ -10,9 +10,11 @@ export interface Pokemon {
 // Selectors
 
 export const selectPokemonResults = (state) => state.pokemon.results;
+export const selectFilteredResults = (state) => state.pokemon.filteredResults;
 export const selectShowModal = (state) => state.pokemon.showDetails;
 export const selectDetailsNumber = (state) => state.pokemon.detailsNumber;
 export const selectPokemonDetails = (state) => state.pokemon.pokemonDetails;
+export const selectSearchTerm = (state) => state.pokemon.searchTerm;
 export const selectState = (state) => state;
 
 // Actions
@@ -35,6 +37,11 @@ interface SetPokemonDetailsAction {
   payload: Object;
 }
 
+interface SetSearchTermAction {
+  type: string;
+  payload: string;
+}
+
 type PokemonActionTypes =
   | SetPokemonDataAction
   | SetShowDetailsAction
@@ -54,6 +61,11 @@ export const setPokemonDetailsAction = (
   payload,
 });
 
+export const setSearchTermAction = (payload: string): PokemonActionTypes => ({
+  type: "pokemonData/setSearchTerm",
+  payload,
+});
+
 export const setShowDetailsAction = (payload: {
   showDetails: boolean;
   detailsNumber?: number;
@@ -66,16 +78,20 @@ export const setShowDetailsAction = (payload: {
 
 interface PokemonState {
   results: Pokemon[] | null;
+  filteredResults: Pokemon[] | null;
   showDetails: boolean;
   detailsNumber: number | null;
   pokemonDetails: Object | null;
+  searchTerm: string;
 }
 
 const initialState: PokemonState = {
   results: null,
+  filteredResults: null,
   showDetails: false,
   detailsNumber: null,
   pokemonDetails: null,
+  searchTerm: "",
 };
 
 export function pokemonReducer(state = initialState, action): PokemonState {
@@ -89,6 +105,12 @@ export function pokemonReducer(state = initialState, action): PokemonState {
             imageUrl: "sprites/" + result.entry_number + ".png",
           };
         }),
+        filteredResults: action.payload.map((result) => {
+          return {
+            ...result,
+            imageUrl: "sprites/" + result.entry_number + ".png",
+          };
+        }),
       };
     }
 
@@ -96,6 +118,18 @@ export function pokemonReducer(state = initialState, action): PokemonState {
       return {
         ...state,
         pokemonDetails: action.payload,
+      };
+    }
+
+    case "pokemonData/setSearchTerm": {
+      return {
+        ...state,
+        searchTerm: action.payload,
+        filteredResults: state.results
+          ? state.results.filter((result) =>
+              result.pokemon_species.name.includes(action.payload)
+            )
+          : null,
       };
     }
 
