@@ -2,6 +2,8 @@ import React, { useEffect, FC } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { capitalize } from "../shared/methods";
+
+import { TypeCell } from "../shared/TypeCell";
 import {
   selectShowModal,
   selectDetailsNumber,
@@ -51,7 +53,7 @@ export const PokemonDetailsContainer: FC<{}> = () => {
           <br />
           Types:
           {types?.map((type) => (
-            <span> {capitalize(type.type.name)} </span>
+            <TypeCell type={type.type.name.toUpperCase()} />
           ))}
           <br />
           Abilities:
