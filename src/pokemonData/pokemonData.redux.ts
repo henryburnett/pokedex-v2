@@ -15,6 +15,7 @@ export const selectShowModal = (state) => state.pokemon.showDetails;
 export const selectDetailsNumber = (state) => state.pokemon.detailsNumber;
 export const selectPokemonDetails = (state) => state.pokemon.pokemonDetails;
 export const selectSearchTerm = (state) => state.pokemon.searchTerm;
+export const selectIsFetching = (state) => state.pokemon.isFetching;
 export const selectState = (state) => state;
 
 // Actions
@@ -42,10 +43,16 @@ interface SetSearchTermAction {
   payload: string;
 }
 
+interface SetIsFetchingAction {
+  type: string;
+  payload: boolean;
+}
+
 type PokemonActionTypes =
   | SetPokemonDataAction
   | SetShowDetailsAction
-  | SetPokemonDetailsAction;
+  | SetPokemonDetailsAction
+  | SetIsFetchingAction;
 
 export const setPokemonDataAction = (
   payload: Pokemon[]
@@ -66,6 +73,11 @@ export const setSearchTermAction = (payload: string): PokemonActionTypes => ({
   payload,
 });
 
+export const setIsFetchingAction = (payload: boolean): PokemonActionTypes => ({
+  type: "pokemonData/setIsFetching",
+  payload,
+});
+
 export const setShowDetailsAction = (payload: {
   showDetails: boolean;
   detailsNumber?: number;
@@ -83,6 +95,7 @@ interface PokemonState {
   detailsNumber: number | null;
   pokemonDetails: Object | null;
   searchTerm: string;
+  isFetching: boolean;
 }
 
 const initialState: PokemonState = {
@@ -92,6 +105,7 @@ const initialState: PokemonState = {
   detailsNumber: null,
   pokemonDetails: null,
   searchTerm: "",
+  isFetching: false,
 };
 
 export function pokemonReducer(state = initialState, action): PokemonState {
@@ -130,6 +144,13 @@ export function pokemonReducer(state = initialState, action): PokemonState {
               result.pokemon_species.name.includes(action.payload)
             )
           : null,
+      };
+    }
+
+    case "pokemonData/setIsFetching": {
+      return {
+        ...state,
+        isFetching: action.payload,
       };
     }
 

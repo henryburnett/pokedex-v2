@@ -1,12 +1,15 @@
 import React, { useEffect, FC } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import { capitalize } from "../shared/methods";
 import {
   selectShowModal,
   selectDetailsNumber,
+  selectIsFetching,
+  selectPokemonDetails,
   setShowDetailsAction,
   setPokemonDetailsAction,
-  selectPokemonDetails,
+  setIsFetchingAction,
 } from "./pokemonData.redux";
 
 export const PokemonDetailsContainer: FC<{}> = () => {
@@ -14,41 +17,57 @@ export const PokemonDetailsContainer: FC<{}> = () => {
   const isDetailsVisible = useSelector(selectShowModal);
   const detailsNumber = useSelector(selectDetailsNumber);
   const pokemonDetails = useSelector(selectPokemonDetails);
+  const isFetching = useSelector(selectIsFetching);
 
   useEffect(() => {
     if (detailsNumber) {
       const detailsUrl =
         "https://pokeapi.co/api/v2/pokemon/" + detailsNumber.toString();
+      dispatch(setIsFetchingAction(true));
       fetch(detailsUrl)
         .then((data) => data.json())
         .then((data) => {
-          console.log({ data });
           dispatch(setPokemonDetailsAction(data));
+          dispatch(setIsFetchingAction(false));
         });
     }
   }, [detailsNumber, dispatch]);
 
   const imageUrl = "sprites/" + detailsNumber + ".png";
+  const name = pokemonDetails ? capitalize(pokemonDetails?.name) : null;
   const types = pokemonDetails?.types;
   const abilities = pokemonDetails?.abilities;
+  const moreInfoLink = "https://bulbapedia.bulbagarden.net/wiki/" + name;
 
   return (
     <PokemonDetails
       isVisible={isDetailsVisible}
       pokemonDetails={pokemonDetails}
     >
-      <Image src={imageUrl} alt={pokemonDetails?.name} />
-      {detailsNumber} - {pokemonDetails?.name}
-      <br />
-      Types:
-      {types?.map((type) => (
-        <span> {type.type.name} </span>
-      ))}
-      <br />
-      Abilities:
-      {abilities?.map((ability) => (
-        <span> {ability.ability.name} </span>
-      ))}
+      {!isFetching && (
+        <div>
+          <Image src={imageUrl} alt={name} />
+          {detailsNumber} - {name}
+          <br />
+          Types:
+          {types?.map((type) => (
+            <span> {type.type.name} </span>
+          ))}
+          <br />
+          Abilities:
+          {abilities?.map((ability) => (
+            <span> {ability.ability.name} </span>
+          ))}
+          <br />
+          More Info:{" "}
+          <span>
+            <a href={moreInfoLink} target="_blank">
+              {moreInfoLink}
+            </a>
+          </span>
+        </div>
+      )}
+
       <Button
         onClick={() => dispatch(setShowDetailsAction({ showDetails: false }))}
       >
