@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import styled from "styled-components";
 import { capitalize } from "../shared/methods";
-import { Pokemon } from "./pokemonData.redux";
+import { Pokemon } from "../shared/models";
 
 interface Props {
   pokemon: Pokemon;

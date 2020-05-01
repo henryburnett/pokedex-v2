@@ -51,17 +51,18 @@ export const PokemonDetailsContainer: FC<{}> = () => {
           <br />
           Types:
           {types?.map((type) => (
-            <span> {type.type.name} </span>
+            <span> {capitalize(type.type.name)} </span>
           ))}
           <br />
           Abilities:
-          {abilities?.map((ability) => (
-            <span> {ability.ability.name} </span>
-          ))}
+          {abilities?.map((ability) => {
+            const abilityName = ability.ability.name;
+            return <span key={abilityName}> {capitalize(abilityName)} </span>;
+          })}
           <br />
           More Info:{" "}
           <span>
-            <a href={moreInfoLink} target="_blank">
+            <a href={moreInfoLink} target="_blank" rel="noopener noreferrer">
               {moreInfoLink}
             </a>
           </span>
@@ -79,6 +80,8 @@ export const PokemonDetailsContainer: FC<{}> = () => {
 
 const PokemonDetails = styled.div`
   visibility: ${(props) => (props.isVisible ? "visible" : "hidden")};
+  border: 2px solid black;
+  border-radius: 5px;
   background-color: lightblue;
   position: fixed;
   top: 50%;
