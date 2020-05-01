@@ -1,11 +1,11 @@
-import React, { useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import styled from "styled-components";
-import { InputEvent } from "../shared/models";
+import React, { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
+import { InputEvent } from '../shared/models';
 import {
   selectSearchTerm,
   setSearchTermAction,
-} from "../pokemonData/pokemonData.redux";
+} from '../pokemonData/pokemonData.redux';
 
 export const Header = () => {
   const dispatch = useDispatch();
@@ -22,8 +22,8 @@ export const Header = () => {
     <StyledHeader>
       <p>Welcome to the Pokédex v2!</p>
       <input
-        type={"text"}
-        placeholder={"Search"}
+        type={'text'}
+        placeholder={'Type to search...'}
         value={searchTerm}
         onInput={handleSearchInput}
       />

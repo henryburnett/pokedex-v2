@@ -1,9 +1,9 @@
-import React, { useEffect, FC } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import styled from "styled-components";
-import { capitalize } from "../shared/methods";
+import React, { useEffect, FC } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
+import { capitalize } from '../shared/methods';
 
-import { TypeCell } from "../shared/TypeCell";
+import { TypeCell } from '../shared/Components/TypeCell';
 import {
   selectShowModal,
   selectDetailsNumber,
@@ -12,7 +12,7 @@ import {
   setShowDetailsAction,
   setPokemonDetailsAction,
   setIsFetchingAction,
-} from "./pokemonData.redux";
+} from './pokemonData.redux';
 
 export const PokemonDetailsContainer: FC<{}> = () => {
   const dispatch = useDispatch();
@@ -24,7 +24,7 @@ export const PokemonDetailsContainer: FC<{}> = () => {
   useEffect(() => {
     if (detailsNumber) {
       const detailsUrl =
-        "https://pokeapi.co/api/v2/pokemon/" + detailsNumber.toString();
+        'https://pokeapi.co/api/v2/pokemon/' + detailsNumber.toString();
       dispatch(setIsFetchingAction(true));
       fetch(detailsUrl)
         .then((data) => data.json())
@@ -35,11 +35,11 @@ export const PokemonDetailsContainer: FC<{}> = () => {
     }
   }, [detailsNumber, dispatch]);
 
-  const imageUrl = "sprites/" + detailsNumber + ".png";
+  const imageUrl = 'sprites/' + detailsNumber + '.png';
   const name = pokemonDetails ? capitalize(pokemonDetails?.name) : null;
   const types = pokemonDetails?.types;
   const abilities = pokemonDetails?.abilities;
-  const moreInfoLink = "https://bulbapedia.bulbagarden.net/wiki/" + name;
+  const moreInfoLink = 'https://bulbapedia.bulbagarden.net/wiki/' + name;
 
   return (
     <PokemonDetails
@@ -53,16 +53,23 @@ export const PokemonDetailsContainer: FC<{}> = () => {
           <br />
           Types:
           {types?.map((type) => (
-            <TypeCell type={type.type.name.toUpperCase()} />
+            <TypeCell type={type.type.name.toUpperCase()}></TypeCell>
           ))}
           <br />
           Abilities:
-          {abilities?.map((ability) => {
+          {abilities?.map((ability, index) => {
             const abilityName = ability.ability.name;
-            return <span key={abilityName}> {capitalize(abilityName)} </span>;
+            return (
+              <span key={abilityName}>
+                {' '}
+                {capitalize(abilityName)}
+                {index ? '' : ' - '}{' '}
+              </span>
+            );
           })}
           <br />
-          More Info:{" "}
+          <br />
+          More Info:{' '}
           <span>
             <a href={moreInfoLink} target="_blank" rel="noopener noreferrer">
               {moreInfoLink}
@@ -81,7 +88,7 @@ export const PokemonDetailsContainer: FC<{}> = () => {
 };
 
 const PokemonDetails = styled.div`
-  visibility: ${(props) => (props.isVisible ? "visible" : "hidden")};
+  visibility: ${(props) => (props.isVisible ? 'visible' : 'hidden')};
   border: 2px solid black;
   border-radius: 5px;
   background-color: lightblue;
