@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
@@ -8,7 +8,7 @@ import { PokemonContainer } from './pokemonData/PokemonContainer';
 import { Header } from './Header';
 import { setPokemonDataAction } from './pokemonData/pokemonData.redux';
 
-const GET_POKEMON_INFO = gql`
+const GET_ALL_POKEMON_INFO = gql`
   {
     pokemons(orderBy: [], first: 807) {
       totalCount
@@ -64,19 +64,12 @@ const GET_151_POKEMON_INFO = gql`
 
 function App() {
   const { data, loading, error } = useQuery(GET_151_POKEMON_INFO);
+  const { data: dataAll, loading: loadingAll, error: errorAll } = useQuery(
+    GET_ALL_POKEMON_INFO
+  );
 
   const dispatch = useDispatch();
-  /*
-  useEffect(() => {
-    const pokemonUrl = 'https://pokeapi.co/api/v2/pokedex/national/';
-    fetch(pokemonUrl)
-      .then((data) => data.json())
-      .then((data) => {
-        const pokemon = data.pokemon_entries;
-        dispatch(setPokemonDataAction(pokemon));
-      });
-  }, [dispatch]);
-  */
+
   if (loading) return <p>Loading...</p>;
   if (error) {
     return <p>Error</p>;
@@ -89,10 +82,19 @@ function App() {
       .sort((pokemon1, pokemon2) => {
         return pokemon1.number > pokemon2.number ? 1 : -1;
       });
-
     dispatch(setPokemonDataAction(pokemonData));
   }
-
+  if (dataAll) {
+    //dispatch({ type: 'ALL_POKEMON', payload: dataAll });
+    const pokemonData = dataAll.pokemons.edges
+      .map((node, index) => {
+        return adaptGraphQLPokemonToModel(node, index);
+      })
+      .sort((pokemon1, pokemon2) => {
+        return pokemon1.number > pokemon2.number ? 1 : -1;
+      });
+    dispatch(setPokemonDataAction(pokemonData));
+  }
   return (
     <StyledApp>
       <Header />

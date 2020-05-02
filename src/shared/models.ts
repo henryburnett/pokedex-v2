@@ -1,5 +1,4 @@
-import React, { FormEvent } from 'react';
-import { type } from 'os';
+import { FormEvent } from 'react';
 import { capitalize } from './methods';
 
 export type InputEvent = FormEvent<{ name: string; value: string }>;

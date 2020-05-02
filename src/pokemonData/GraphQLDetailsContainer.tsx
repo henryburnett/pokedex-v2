@@ -1,17 +1,13 @@
-import React, { useEffect, FC } from 'react';
+import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { capitalize } from '../shared/methods';
 import { Pokemon } from '../shared/models';
 import { TypeCell } from '../shared/Components/TypeCell';
 import {
   selectShowDetails,
   selectDetailsNumber,
   selectIsFetching,
-  selectPokemonDetails,
   setShowDetailsAction,
-  setPokemonDetailsAction,
-  setIsFetchingAction,
   selectPokemonResults,
 } from './pokemonData.redux';
 

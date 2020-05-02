@@ -130,14 +130,18 @@ export function pokemonReducer(state = initialState, action): PokemonState {
             image: 'sprites/' + number + '.png',
           };
         }),
-        filteredResults: action.payload.map((result: Pokemon) => {
-          const number = result.number.toString().replace(/^0+/, '');
-          return {
-            ...result,
-            number,
-            image: 'sprites/' + number + '.png',
-          };
-        }),
+        filteredResults: action.payload
+          .map((result: Pokemon) => {
+            const number = result.number.toString().replace(/^0+/, '');
+            return {
+              ...result,
+              number,
+              image: 'sprites/' + number + '.png',
+            };
+          })
+          .filter((result: Pokemon) =>
+            result.name.toLowerCase().includes(state.searchTerm)
+          ),
       };
     }
 
