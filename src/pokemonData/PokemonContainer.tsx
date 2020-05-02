@@ -1,32 +1,35 @@
-import React, { FC } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import styled from "styled-components";
-import { Pokemon } from "../shared/models";
-import { PokemonListItem } from "./PokemonListItem";
+import React, { FC } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
+import { Pokemon } from '../shared/models';
+import { PokemonItem } from './PokemonItem';
 import {
   selectPokemonResults,
   selectFilteredResults,
+  selectDisplayTiles,
   setShowDetailsAction,
   selectSearchTerm,
-} from "./pokemonData.redux";
-import { PokemonDetailsContainer } from "./PokemonDetailsContainer";
+} from './pokemonData.redux';
+import { PokemonDetailsContainer } from './PokemonDetailsContainer';
 
-export const PokemonListContainer: FC<{}> = () => {
+export const PokemonContainer: FC<{}> = () => {
   const dispatch = useDispatch();
   const searchTerm = useSelector(selectSearchTerm);
   const allPokemon = useSelector(selectPokemonResults);
   const filteredPokemon = useSelector(selectFilteredResults);
+  const displayTiles = useSelector(selectDisplayTiles);
 
   const pokemonList =
-    searchTerm === "" || searchTerm === null ? allPokemon : filteredPokemon;
+    searchTerm === '' || searchTerm === null ? allPokemon : filteredPokemon;
 
   return (
     <Container>
       {pokemonList &&
         pokemonList.map((pokemon: Pokemon) => (
-          <PokemonListItem
+          <PokemonItem
             pokemon={pokemon}
             key={pokemon.entry_number}
+            displayTile={displayTiles}
             onClick={() =>
               dispatch(
                 setShowDetailsAction({

@@ -1,15 +1,15 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import styled from "styled-components";
-import { PokemonListContainer } from "./pokemonData/PokemonListContainer";
-import { Header } from "./Header";
-import { setPokemonDataAction } from "./pokemonData/pokemonData.redux";
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import styled from 'styled-components';
+import { PokemonContainer } from './pokemonData/PokemonContainer';
+import { Header } from './Header';
+import { setPokemonDataAction } from './pokemonData/pokemonData.redux';
 
 function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const pokemonUrl = "https://pokeapi.co/api/v2/pokedex/national/";
+    const pokemonUrl = 'https://pokeapi.co/api/v2/pokedex/national/';
     fetch(pokemonUrl)
       .then((data) => data.json())
       .then((data) => {
@@ -21,7 +21,7 @@ function App() {
   return (
     <StyledApp>
       <Header />
-      <PokemonListContainer />
+      <PokemonContainer />
     </StyledApp>
   );
 }

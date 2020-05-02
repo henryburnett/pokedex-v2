@@ -5,13 +5,13 @@ import { Pokemon } from '../shared/models';
 
 interface Props {
   pokemon: Pokemon;
+  displayTile: boolean;
   onClick: () => void;
 }
 
-export const PokemonListItem: FC<Props> = ({ pokemon, onClick }) => {
-  const displayList = false;
-  return displayList ? (
-    <ListItem onClick={onClick}>
+export const PokemonItem: FC<Props> = ({ pokemon, displayTile, onClick }) => {
+  return displayTile ? (
+    <TileItem onClick={onClick}>
       <img src={pokemon.imageUrl} alt={pokemon.pokemon_species.name} />
       <br />
       <span>
@@ -19,7 +19,7 @@ export const PokemonListItem: FC<Props> = ({ pokemon, onClick }) => {
           ' - ' +
           capitalize(pokemon.pokemon_species.name)}
       </span>
-    </ListItem>
+    </TileItem>
   ) : (
     <RowItem onClick={onClick}>
       <Text>
@@ -33,7 +33,7 @@ export const PokemonListItem: FC<Props> = ({ pokemon, onClick }) => {
   );
 };
 
-const ListItem = styled.div`
+const TileItem = styled.div`
   width: 200px;
   height: 200px;
   margin: 1vw;
