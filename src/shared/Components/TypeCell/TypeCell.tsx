@@ -7,9 +7,13 @@ interface Props {
 }
 
 export const TypeCell: FC<Props> = ({ type }) => {
-  const backgroundColor = TypeColors[type];
+  const backgroundColor = TypeColors[type.toUpperCase()];
 
-  return <StyledCell backgroundColor={backgroundColor}>{type}</StyledCell>;
+  return (
+    <StyledCell backgroundColor={backgroundColor}>
+      {type.toUpperCase()}
+    </StyledCell>
+  );
 };
 
 const StyledCell = styled.span`
@@ -17,7 +21,8 @@ const StyledCell = styled.span`
   color: white;
   border: 1px solid black;
   border-radius: 5px;
-  padding: 5px 2px;
+  padding: 3px 3px;
   margin: 0.5vw;
   display: inline-block;
+  font-size: 0.75em;
 `;

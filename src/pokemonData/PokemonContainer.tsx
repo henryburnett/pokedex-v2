@@ -9,8 +9,9 @@ import {
   selectDisplayTiles,
   setShowDetailsAction,
   selectSearchTerm,
+  selectShowDetails,
 } from './pokemonData.redux';
-import { PokemonDetailsContainer } from './PokemonDetailsContainer';
+import { GraphQLDetailsContainer } from './GraphQLDetailsContainer';
 
 export const PokemonContainer: FC<{}> = () => {
   const dispatch = useDispatch();
@@ -18,30 +19,34 @@ export const PokemonContainer: FC<{}> = () => {
   const allPokemon = useSelector(selectPokemonResults);
   const filteredPokemon = useSelector(selectFilteredResults);
   const displayTiles = useSelector(selectDisplayTiles);
+  const showDetails = useSelector(selectShowDetails);
 
   const pokemonList =
     searchTerm === '' || searchTerm === null ? allPokemon : filteredPokemon;
 
   return (
-    <Container>
-      {pokemonList &&
-        pokemonList.map((pokemon: Pokemon) => (
-          <PokemonItem
-            pokemon={pokemon}
-            key={pokemon.entry_number}
-            displayTile={displayTiles}
-            onClick={() =>
-              dispatch(
-                setShowDetailsAction({
-                  showDetails: true,
-                  detailsNumber: pokemon.entry_number,
-                })
-              )
-            }
-          />
-        ))}
-      <PokemonDetailsContainer />
-    </Container>
+    pokemonList && (
+      <Container>
+        {pokemonList &&
+          pokemonList.map((pokemon: Pokemon) => (
+            <PokemonItem
+              pokemon={pokemon}
+              key={pokemon.number}
+              displayTile={displayTiles}
+              onClick={() =>
+                dispatch(
+                  setShowDetailsAction({
+                    showDetails: true,
+                    detailsNumber: pokemon.number,
+                  })
+                )
+              }
+            />
+          ))}
+
+        {showDetails && <GraphQLDetailsContainer />}
+      </Container>
+    )
   );
 };
 

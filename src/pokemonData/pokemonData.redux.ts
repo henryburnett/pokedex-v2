@@ -4,7 +4,7 @@ import { Pokemon } from '../shared/models';
 
 export const selectPokemonResults = (state) => state.pokemon.results;
 export const selectFilteredResults = (state) => state.pokemon.filteredResults;
-export const selectShowModal = (state) => state.pokemon.showDetails;
+export const selectShowDetails = (state) => state.pokemon.showDetails;
 export const selectDetailsNumber = (state) => state.pokemon.detailsNumber;
 export const selectPokemonDetails = (state) => state.pokemon.pokemonDetails;
 export const selectSearchTerm = (state) => state.pokemon.searchTerm;
@@ -122,16 +122,20 @@ export function pokemonReducer(state = initialState, action): PokemonState {
     case 'pokemonData/setData': {
       return {
         ...state,
-        results: action.payload.map((result) => {
+        results: action.payload.map((result: Pokemon) => {
+          const number = result.number.toString().replace(/^0+/, '');
           return {
             ...result,
-            imageUrl: 'sprites/' + result.entry_number + '.png',
+            number,
+            image: 'sprites/' + number + '.png',
           };
         }),
-        filteredResults: action.payload.map((result) => {
+        filteredResults: action.payload.map((result: Pokemon) => {
+          const number = result.number.toString().replace(/^0+/, '');
           return {
             ...result,
-            imageUrl: 'sprites/' + result.entry_number + '.png',
+            number,
+            image: 'sprites/' + number + '.png',
           };
         }),
       };
@@ -156,8 +160,8 @@ export function pokemonReducer(state = initialState, action): PokemonState {
         ...state,
         searchTerm: action.payload,
         filteredResults: state.results
-          ? state.results.filter((result) =>
-              result.pokemon_species.name.includes(action.payload)
+          ? state.results.filter((result: Pokemon) =>
+              result.name.toLowerCase().includes(action.payload)
             )
           : null,
       };

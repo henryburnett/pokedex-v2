@@ -1,7 +1,8 @@
-import React, { FC } from 'react';
+import React, { useState, FC } from 'react';
 import styled from 'styled-components';
 import { capitalize } from '../shared/methods';
 import { Pokemon } from '../shared/models';
+import { TypeCell } from '../shared/Components/TypeCell';
 
 interface Props {
   pokemon: Pokemon;
@@ -10,25 +11,35 @@ interface Props {
 }
 
 export const PokemonItem: FC<Props> = ({ pokemon, displayTile, onClick }) => {
+  const [isShown, setIsShown] = useState(false);
+
   return displayTile ? (
-    <TileItem onClick={onClick}>
-      <img src={pokemon.imageUrl} alt={pokemon.pokemon_species.name} />
-      <br />
-      <span>
-        {pokemon.entry_number +
-          ' - ' +
-          capitalize(pokemon.pokemon_species.name)}
-      </span>
+    <TileItem
+      onClick={onClick}
+      onMouseEnter={() => setIsShown(true)}
+      onMouseLeave={() => setIsShown(false)}
+    >
+      <img src={pokemon.image} alt={pokemon.name} />
+
+      <span>{'#' + pokemon.number + ' - ' + capitalize(pokemon.name)}</span>
+      {isShown && (
+        <TypesDiv>
+          {pokemon.types?.map((type) => (
+            <TypeCell key={type} type={type} />
+          ))}
+        </TypesDiv>
+      )}
     </TileItem>
   ) : (
     <RowItem onClick={onClick}>
-      <Text>
-        {pokemon.entry_number +
-          ' - ' +
-          capitalize(pokemon.pokemon_species.name)}
-      </Text>
-      <br />
-      <Sprite src={pokemon.imageUrl} alt={pokemon.pokemon_species.name} />
+      <Text>{pokemon.number}</Text>
+      <Sprite src={pokemon.image} alt={pokemon.name} />
+      <Text>{capitalize(pokemon.name)}</Text>
+      <span>
+        {pokemon.types?.map((type) => (
+          <TypeCell key={type} type={type} />
+        ))}
+      </span>
     </RowItem>
   );
 };
@@ -40,7 +51,7 @@ const TileItem = styled.div`
   background-color: red;
   border: 2px solid black;
   border-radius: 5px;
-  font-size: 1.5em;
+  font-size: 1.25em;
   text-align: center;
   cursor: pointer;
   display: flex;
@@ -70,3 +81,5 @@ const Sprite = styled.img`
 `;
 
 const Text = styled.span``;
+
+const TypesDiv = styled.div``;

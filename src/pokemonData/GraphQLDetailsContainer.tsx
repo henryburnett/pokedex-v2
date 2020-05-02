@@ -2,7 +2,7 @@ import React, { useEffect, FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { capitalize } from '../shared/methods';
-
+import { Pokemon } from '../shared/models';
 import { TypeCell } from '../shared/Components/TypeCell';
 import {
   selectShowDetails,
@@ -12,60 +12,40 @@ import {
   setShowDetailsAction,
   setPokemonDetailsAction,
   setIsFetchingAction,
+  selectPokemonResults,
 } from './pokemonData.redux';
 
-export const PokemonDetailsContainer: FC<{}> = () => {
+export const GraphQLDetailsContainer: FC<{}> = () => {
   const dispatch = useDispatch();
-  const isDetailsVisible = useSelector(selectShowDetails);
   const detailsNumber = useSelector(selectDetailsNumber);
-  const pokemonDetails = useSelector(selectPokemonDetails);
+  const pokemonList = useSelector(selectPokemonResults);
+  const selectedPokemon: Pokemon = pokemonList
+    ? pokemonList[detailsNumber - 1]
+    : null;
+  const isDetailsVisible = useSelector(selectShowDetails);
   const isFetching = useSelector(selectIsFetching);
 
-  useEffect(() => {
-    if (detailsNumber) {
-      const detailsUrl =
-        'https://pokeapi.co/api/v2/pokemon/' + detailsNumber.toString();
-      dispatch(setIsFetchingAction(true));
-      fetch(detailsUrl)
-        .then((data) => data.json())
-        .then((data) => {
-          dispatch(setPokemonDetailsAction(data));
-          dispatch(setIsFetchingAction(false));
-        });
-    }
-  }, [detailsNumber, dispatch]);
-
-  const image = 'sprites/' + detailsNumber + '.png';
-  const name = pokemonDetails ? capitalize(pokemonDetails?.name) : null;
-  const types = pokemonDetails?.types;
-  const abilities = pokemonDetails?.abilities;
-  const moreInfoLink = 'https://bulbapedia.bulbagarden.net/wiki/' + name;
+  const moreInfoLink =
+    'https://bulbapedia.bulbagarden.net/wiki/' + selectedPokemon?.name;
 
   return (
-    <PokemonDetails
-      isVisible={isDetailsVisible}
-      pokemonDetails={pokemonDetails}
-    >
+    <PokemonDetails isVisible={isDetailsVisible}>
       {!isFetching && (
         <div>
-          <Image src={image} alt={name} />
-          {detailsNumber} - {name}
+          <Image src={selectedPokemon.image} alt={selectedPokemon.image} />
+          {selectedPokemon.number} - {selectedPokemon.name}
           <br />
           Types:
-          {types?.map((type) => (
-            <TypeCell
-              key={type.type.name}
-              type={type.type.name.toUpperCase()}
-            ></TypeCell>
+          {selectedPokemon.types?.map((type) => (
+            <TypeCell key={type} type={type} />
           ))}
           <br />
           Abilities:
-          {abilities?.map((ability, index) => {
-            const abilityName = ability.ability.name;
+          {selectedPokemon.abilities?.map((ability, index) => {
             return (
-              <span key={abilityName}>
+              <span key={ability}>
                 {' '}
-                {capitalize(abilityName)}
+                {ability}
                 {index ? '' : ' - '}{' '}
               </span>
             );
